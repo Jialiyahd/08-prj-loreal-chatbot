@@ -1,8 +1,8 @@
-/* ===== L'OREAL BEAUTY ASSISTANT ===== */
+/* L'OREAL BEAUTY ASSISTANT */
 
-// Replace this with your actual Cloudflare Worker URL
+// LINE 4: PASTE YOUR CLOUDFLARE WORKER URL HERE
 const WORKER_URL = "08-prj-loreal-chatbot.jialiyahdukes.workers.dev";
-// HTML Elements
+// Get HTML elements
 const chatForm = document.getElementById("chatForm");
 const userInput = document.getElementById("userInput");
 const chatWindow = document.getElementById("chatWindow");
@@ -13,10 +13,10 @@ const latestQuestionText = document.getElementById("latestQuestionText");
 
 const suggestionButtons = document.querySelectorAll(".suggestion-btn");
 
-// Stores messages for the AI to remember
+// Keep conversation history during this session
 const conversationHistory = [];
 
-// Add a message bubble to the conversation
+// Create chat bubbles
 function addMessage(text, sender) {
   const bubble = document.createElement("div");
 
@@ -29,7 +29,7 @@ function addMessage(text, sender) {
   return bubble;
 }
 
-// Display only the newest question in the summary
+// Show only the latest question above the chat
 function updateLatestQuestion(question) {
   latestQuestionText.textContent = question;
   latestQuestion.hidden = false;
@@ -38,35 +38,38 @@ function updateLatestQuestion(question) {
 // Welcome message
 addMessage(
   "Hi beautiful! 💗 Welcome to your L'Oréal Beauty " +
-    "Assistant. Tell me about your beauty goals, " +
-    "and I'll help you explore skincare, makeup, " +
-    "and haircare recommendations!",
+    "Assistant! I'm here to help you find skincare, " +
+    "makeup, and haircare recommendations. " +
+    "What's your beauty goal today?",
   "ai",
 );
 
-// Send message to AI
+// Send a question to the AI
 async function sendMessage(question) {
   const userMessage = question.trim();
 
-  if (!userMessage || sendBtn.disabled) return;
+  if (!userMessage || sendBtn.disabled) {
+    return;
+  }
 
-  // Update latest question (replaces previous question)
+  // Show the latest question
   updateLatestQuestion(userMessage);
 
-  // Display user bubble
+  // Add user's message bubble
   addMessage(userMessage, "user");
 
+  // Clear and disable the input
   userInput.value = "";
   sendBtn.disabled = true;
   userInput.disabled = true;
 
   const loadingBubble = addMessage(
-    "✨ Thinking of the perfect recommendation...",
+    "✨ Finding your perfect beauty advice...",
     "ai",
   );
 
   try {
-    // Send previous conversation + newest question
+    // Include previous messages for context
     const requestMessages = [
       ...conversationHistory,
       {
@@ -75,6 +78,7 @@ async function sendMessage(question) {
       },
     ];
 
+    // Connect to Cloudflare Worker
     const response = await fetch(WORKER_URL, {
       method: "POST",
       headers: {
@@ -88,23 +92,23 @@ async function sendMessage(question) {
     const data = await response.json();
 
     if (!response.ok || data.error) {
-      throw new Error(
-        data.error?.message ||
-          (typeof data.error === "string" ? data.error : "") ||
-          "Unable to connect to the chatbot.",
-      );
+      const errorMessage =
+        typeof data.error === "string" ? data.error : data.error?.message;
+
+      throw new Error(errorMessage || "Unable to connect to the AI.");
     }
 
+    // Read the AI's answer
     const aiReply = data.choices?.[0]?.message?.content;
 
     if (!aiReply) {
-      throw new Error("No AI response received.");
+      throw new Error("The AI returned an empty response.");
     }
 
-    // Replace loading message with AI response
+    // Replace loading message with the answer
     loadingBubble.textContent = aiReply;
 
-    // Save the conversation for follow-up questions
+    // Save both messages for future questions
     conversationHistory.push(
       {
         role: "user",
@@ -116,16 +120,16 @@ async function sendMessage(question) {
       },
     );
 
-    // Limit conversation to the most recent 30 messages
+    // Keep the last 30 messages
     if (conversationHistory.length > 30) {
       conversationHistory.splice(0, conversationHistory.length - 30);
     }
   } catch (error) {
-    console.error("Chatbot Error:", error);
+    console.error("Chatbot error:", error);
 
     loadingBubble.textContent =
-      "Sorry, beautiful! 💗 I'm having trouble " +
-      "connecting right now. Please try again.";
+      "Sorry! 💗 I couldn't connect right now. " +
+      "Please try again in a moment.";
   } finally {
     sendBtn.disabled = false;
     userInput.disabled = false;
@@ -135,7 +139,7 @@ async function sendMessage(question) {
   }
 }
 
-// Submit a typed question
+// Send typed questions
 chatForm.addEventListener("submit", function (event) {
   event.preventDefault();
   sendMessage(userInput.value);

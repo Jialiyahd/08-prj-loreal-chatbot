@@ -1,40 +1,250 @@
 
-<div class="chatbox">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
 
-  <!-- Latest Question Display -->
-  <div class="latest-question" id="latestQuestion" hidden>
-    <span class="latest-question-label">
-      YOUR LATEST QUESTION
-    </span>
-    <p id="latestQuestionText"></p>
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <meta
+    name="description"
+    content="Discover personalized skincare, makeup, and haircare advice with the L'Oréal AI Beauty Assistant."
+  >
+
+  <title>L'Oréal | AI Beauty Assistant</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+
+  <link
+    rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin
+  >
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap"
+    rel="stylesheet"
+  >
+
+  <!-- Material Icons -->
+  <link
+    href="https://fonts.googleapis.com/icon?family=Material+Icons"
+    rel="stylesheet"
+  >
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <div class="page-wrapper">
+
+    <!-- ===== HEADER ===== -->
+    <header class="site-header">
+
+      <!-- L'Oreal Logo -->
+      <img
+        src="loreal-logo.png"
+        alt="L'Oréal Logo"
+        class="brand-logo"
+      >
+
+      <p class="brand-tagline">
+        L'ORÉAL BEAUTY TECHNOLOGY
+      </p>
+
+      <h1 class="site-title">
+        Beauty, Personalized.
+      </h1>
+
+      <p class="site-description">
+        Your personal AI-powered beauty assistant.
+        Discover skincare, makeup, and haircare
+        recommendations tailored to your needs.
+      </p>
+
+    </header>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <main>
+
+      <!-- Suggested Questions -->
+      <section
+        class="suggested-questions"
+        aria-label="Suggested beauty questions"
+      >
+
+        <h2>What can I help you with?</h2>
+
+        <p>
+          Choose a topic below or ask your own question!
+        </p>
+
+        <div class="suggestion-buttons">
+
+          <button
+            type="button"
+            class="suggestion-btn"
+            data-question="Can you help me build a skincare routine for my skin type?"
+          >
+            ✨ Skincare Routine
+          </button>
+
+          <button
+            type="button"
+            class="suggestion-btn"
+            data-question="What L'Oréal makeup products would you recommend for a natural everyday look?"
+          >
+            💄 Makeup Recommendations
+          </button>
+
+          <button
+            type="button"
+            class="suggestion-btn"
+            data-question="Can you recommend L'Oréal haircare products for my hair type?"
+          >
+            💗 Haircare Advice
+          </button>
+
+        </div>
+
+      </section>
+
+      <!-- ===== CHATBOT ===== -->
+      <section
+        class="chatbox"
+        aria-label="AI Beauty Assistant Chat"
+      >
+
+        <div class="chatbox-header">
+
+          <div class="assistant-info">
+
+            <span
+              class="material-icons"
+              aria-hidden="true"
+            >
+              auto_awesome
+            </span>
+
+            <div>
+              <h2>L'Oréal Beauty Assistant</h2>
+
+              <p>
+                Your personal beauty advisor
+              </p>
+            </div>
+
+          </div>
+
+          <span class="assistant-status">
+            <span class="status-dot"></span>
+            AI Assistant
+          </span>
+
+        </div>
+
+        <!-- Latest User Question -->
+        <div
+          id="latestQuestion"
+          class="latest-question"
+          hidden
+        >
+
+          <span class="latest-question-label">
+            YOUR LATEST QUESTION
+          </span>
+
+          <p id="latestQuestionText"></p>
+
+        </div>
+
+        <!-- Chat Conversation -->
+        <div
+          id="chatWindow"
+          class="chat-window"
+          role="log"
+          aria-live="polite"
+          aria-label="Chat conversation"
+          aria-relevant="additions text"
+        >
+          <!-- JavaScript adds message bubbles here -->
+        </div>
+
+        <!-- Chat Input Form -->
+        <form
+          id="chatForm"
+          class="chat-form"
+        >
+
+          <label
+            for="userInput"
+            class="visually-hidden"
+          >
+            Ask your beauty question
+          </label>
+
+          <input
+            type="text"
+            id="userInput"
+            name="userInput"
+            placeholder="Ask me anything about beauty..."
+            autocomplete="off"
+            maxlength="1000"
+            required
+          >
+
+          <button
+            type="submit"
+            id="sendBtn"
+            aria-label="Send message"
+          >
+            <span
+              class="material-icons"
+              aria-hidden="true"
+            >
+              send
+            </span>
+
+            <span>Send</span>
+          </button>
+
+        </form>
+
+        <p class="chat-disclaimer">
+          AI-generated recommendations are for
+          informational purposes only.
+          Always check product ingredients and
+          suitability for your individual needs.
+        </p>
+
+      </section>
+
+    </main>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="site-footer">
+
+      <p>
+        L'Oréal AI Beauty Assistant
+      </p>
+
+      <p>
+        Student project created for educational purposes.
+        Not affiliated with or endorsed by L'Oréal.
+      </p>
+
+    </footer>
+
   </div>
 
-  <!-- Conversation History -->
-  <div
-    id="chatWindow"
-    class="chat-window"
-    role="log"
-    aria-live="polite"
-    aria-relevant="additions text"
-  ></div>
+  <!-- JavaScript -->
+  <script src="script.js"></script>
 
-  <!-- Chat Input -->
-  <form id="chatForm" class="chat-form">
-    <label for="userInput" class="visually-hidden">
-      Ask a beauty question
-    </label>
-
-    <input
-      type="text"
-      id="userInput"
-      placeholder="Ask me anything about beauty..."
-      autocomplete="off"
-      required
-    />
-
-    <button type="submit" id="sendBtn">
-      Send
-    </button>
-  </form>
-
-</div>
+</body>
+</html>
