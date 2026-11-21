@@ -1,11 +1,7 @@
-
 /* ===== L'OREAL BEAUTY ASSISTANT ===== */
 
 // Replace this with your actual Cloudflare Worker URL
-const WORKER_URL =
-   "08-prj-loreal-chatbot.jialiyahdukes.workers.dev";
-;
-
+const WORKER_URL = "08-prj-loreal-chatbot.jialiyahdukes.workers.dev";
 // HTML Elements
 const chatForm = document.getElementById("chatForm");
 const userInput = document.getElementById("userInput");
@@ -13,11 +9,9 @@ const chatWindow = document.getElementById("chatWindow");
 const sendBtn = document.getElementById("sendBtn");
 
 const latestQuestion = document.getElementById("latestQuestion");
-const latestQuestionText =
-  document.getElementById("latestQuestionText");
+const latestQuestionText = document.getElementById("latestQuestionText");
 
-const suggestionButtons =
-  document.querySelectorAll(".suggestion-btn");
+const suggestionButtons = document.querySelectorAll(".suggestion-btn");
 
 // Stores messages for the AI to remember
 const conversationHistory = [];
@@ -44,10 +38,10 @@ function updateLatestQuestion(question) {
 // Welcome message
 addMessage(
   "Hi beautiful! 💗 Welcome to your L'Oréal Beauty " +
-  "Assistant. Tell me about your beauty goals, " +
-  "and I'll help you explore skincare, makeup, " +
-  "and haircare recommendations!",
-  "ai"
+    "Assistant. Tell me about your beauty goals, " +
+    "and I'll help you explore skincare, makeup, " +
+    "and haircare recommendations!",
+  "ai",
 );
 
 // Send message to AI
@@ -68,7 +62,7 @@ async function sendMessage(question) {
 
   const loadingBubble = addMessage(
     "✨ Thinking of the perfect recommendation...",
-    "ai"
+    "ai",
   );
 
   try {
@@ -77,18 +71,18 @@ async function sendMessage(question) {
       ...conversationHistory,
       {
         role: "user",
-        content: userMessage
-      }
+        content: userMessage,
+      },
     ];
 
     const response = await fetch(WORKER_URL, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        messages: requestMessages
-      })
+        messages: requestMessages,
+      }),
     });
 
     const data = await response.json();
@@ -96,13 +90,12 @@ async function sendMessage(question) {
     if (!response.ok || data.error) {
       throw new Error(
         data.error?.message ||
-        (typeof data.error === "string" ? data.error : "") ||
-        "Unable to connect to the chatbot."
+          (typeof data.error === "string" ? data.error : "") ||
+          "Unable to connect to the chatbot.",
       );
     }
 
-    const aiReply =
-      data.choices?.[0]?.message?.content;
+    const aiReply = data.choices?.[0]?.message?.content;
 
     if (!aiReply) {
       throw new Error("No AI response received.");
@@ -115,29 +108,24 @@ async function sendMessage(question) {
     conversationHistory.push(
       {
         role: "user",
-        content: userMessage
+        content: userMessage,
       },
       {
         role: "assistant",
-        content: aiReply
-      }
+        content: aiReply,
+      },
     );
 
     // Limit conversation to the most recent 30 messages
     if (conversationHistory.length > 30) {
-      conversationHistory.splice(
-        0,
-        conversationHistory.length - 30
-      );
+      conversationHistory.splice(0, conversationHistory.length - 30);
     }
-
   } catch (error) {
     console.error("Chatbot Error:", error);
 
     loadingBubble.textContent =
       "Sorry, beautiful! 💗 I'm having trouble " +
       "connecting right now. Please try again.";
-
   } finally {
     sendBtn.disabled = false;
     userInput.disabled = false;
@@ -148,14 +136,14 @@ async function sendMessage(question) {
 }
 
 // Submit a typed question
-chatForm.addEventListener("submit", function(event) {
+chatForm.addEventListener("submit", function (event) {
   event.preventDefault();
   sendMessage(userInput.value);
 });
 
 // Suggested question buttons
-suggestionButtons.forEach(function(button) {
-  button.addEventListener("click", function() {
+suggestionButtons.forEach(function (button) {
+  button.addEventListener("click", function () {
     sendMessage(button.dataset.question || "");
   });
 });
